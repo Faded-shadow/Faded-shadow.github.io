@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/post/4a17b156.html</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>2023Asuri暑假培训-Reverse-1</title>
+    <url>/post/4c5ffb3d.html</url>
+    <content><![CDATA[<h1 id="Re-静态分析入门-1"><a href="#Re-静态分析入门-1" class="headerlink" title="Re-静态分析入门-1"></a>Re-静态分析入门-1</h1><p>2023.8.5 by Shen_Fan</p>
+<hr>
+<p>[TOC]</p>
+<h3 id="前置知识-1"><a href="#前置知识-1" class="headerlink" title="前置知识-1"></a>前置知识-1</h3><h4 id="0x1-一段C代码是如何跑起来的"><a href="#0x1-一段C代码是如何跑起来的" class="headerlink" title="0x1 一段C代码是如何跑起来的"></a>0x1 一段C代码是如何跑起来的</h4><p>*以下内容仅作了解</p>
+<p>以下是我们作为示例的一段c代码hello.c</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World!&quot;</span>); <span class="comment">//打印Hello World!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C语言不像python，python作为一门脚本语言，拥有自己的专用解释器来运行。所有的代码会在转换后喂给解释器，再由解释器解释运行。而C语言需要经过编译直接转化为最底层的机器代码，直接喂给CPU运行。因此，C语言的效率远高于python。</p>
+<p>C语言一般的编译过程如图：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph LR</span><br><span class="line">src[源代码.c]--预处理--&gt;o[预处理文件.i]--编译--&gt;s[汇编.s]--汇编&amp;链接--&gt;e[可执行文件]</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们将一步步分析编译的过程。</p>
+<h5 id="0b01-预处理"><a href="#0b01-预处理" class="headerlink" title="0b01 预处理"></a>0b01 预处理</h5><p>1.删除所有的注释</p>
+<p>2.拓展宏（#define语句）</p>
+<p>3.包含文件(#include语句)</p>
+<p>经过预处理的hello.i文件：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">9</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">3</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/crtdefs.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下省略若干行</span></span><br><span class="line"></span><br><span class="line"># <span class="number">1398</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/_mingw_print_pop.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">1400</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;hello_world.c&quot;</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># <span class="number">3</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="0b10-编译"><a href="#0b10-编译" class="headerlink" title="0b10 编译"></a>0b10 编译</h5><p>编译过程会将预处理文件转化为汇编语言。汇编代码是一门面向底层的低级语言。语句较为简单，例如把某个数字存到寄存器，把寄存器的某些值进行数学运算等等。</p>
+<p>hello.i编译得到的汇编文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">	.file	&quot;hello_world.c&quot;</span><br><span class="line">	.text</span><br><span class="line">	.def	__main;	.scl	2;	.type	32;	.endef</span><br><span class="line">	.section .rdata,&quot;dr&quot;</span><br><span class="line">.LC0:</span><br><span class="line">	.ascii &quot;hello world!\0&quot;</span><br><span class="line">	.text</span><br><span class="line">	.globl	main</span><br><span class="line">	.def	main;	.scl	2;	.type	32;	.endef</span><br><span class="line">	.seh_proc	main</span><br><span class="line">main:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	.seh_pushreg	%rbp</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	.seh_setframe	%rbp, 0</span><br><span class="line">	subq	$32, %rsp</span><br><span class="line">	.seh_stackalloc	32</span><br><span class="line">	.seh_endprologue</span><br><span class="line">	call	__main</span><br><span class="line">	leaq	.LC0(%rip), %rcx</span><br><span class="line">	call	printf</span><br><span class="line">	movl	$0, %eax</span><br><span class="line">	addq	$32, %rsp</span><br><span class="line">	popq	%rbp</span><br><span class="line">	ret</span><br><span class="line">	.seh_endproc</span><br><span class="line">	.ident	&quot;GCC: (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0&quot;</span><br><span class="line">	.def	printf;	.scl	2;	.type	32;	.endef</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="0b11-汇编-链接"><a href="#0b11-汇编-链接" class="headerlink" title="0b11 汇编&amp;链接"></a>0b11 汇编&amp;链接</h5><p>首先，汇编程序将.s文件转化为二进制的目标文件（.o），然后链接器将库或者是其他文件链接到该文件中产生可直接运行的程序（.exe等等）。</p>
+<p>当我们谈到运行C语言程序时，运行的就是最后得到的二进制文件而非从源代码开始再编译一遍。Reverse便是要从最后得到的二进制文件出发尝试还原源码的逻辑。</p>
+<p>IDA的功能便是以CPU的视角将二进制文件（一堆看上去意义不明的0和1）解析为一堆汇编代码，然后再根据逻辑划分程序的各个部分并试图还原C语言代码。但已经在编译过程中丢失的东西（如注释）都已经永远的被删除了，留下的只有IDA的推测。</p>
+<h4 id="0x2-IDA的基本使用方法"><a href="#0x2-IDA的基本使用方法" class="headerlink" title="0x2 IDA的基本使用方法"></a>0x2 IDA的基本使用方法</h4><p>如果你已经下载并查看过IDA，就会发现IDA拥有ida.exe和ida64.exe两个可执行文件。ida.exe用于32位的文件，ida64.exe用于64位的程序。若要查看某个程序是32位还是64位，可以使用exeinfope(仅适用于Windows)，linux下的控制台file指令，以及我正在研究的DIE-engine。</p>
+<p>将程序拖到IDA的exe文件上，ida就会识别这个程序的信息。一路ok过去后再等待一段时间，IDA就能成功反编译（也有可能寄了）这个程序。IDA的左侧为函数窗口，显示了程序中所有以及被识别了的函数（绝大多数会是库函数），以下为IDA的常用快捷键及功能：</p>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F5</td>
+<td>一键反汇编当前函数并生成类c代码</td>
+</tr>
+<tr>
+<td>shift + F12</td>
+<td>一键显示程序中的所有字符串</td>
+</tr>
+<tr>
+<td>x</td>
+<td>选择某个函数或变量，查看程序所有用到这些的地方</td>
+</tr>
+<tr>
+<td>shift + e</td>
+<td>选中区域或变量，一键得到其中的数值</td>
+</tr>
+<tr>
+<td>&#x2F;</td>
+<td>在伪代码页面写下注释</td>
+</tr>
+<tr>
+<td>u</td>
+<td>将某个函数的定义取消</td>
+</tr>
+<tr>
+<td>p</td>
+<td>在此处定义函数</td>
+</tr>
+<tr>
+<td>c</td>
+<td>将机器码（16进制的一堆数值）编译为汇编代码</td>
+</tr>
+</tbody></table>
+<h4 id="0x3-C语言常见函数"><a href="#0x3-C语言常见函数" class="headerlink" title="0x3 C语言常见函数"></a>0x3 C语言常见函数</h4><p>首先向我们走来的是来自stdio.h的输入输出函数</p>
+<p>stdin代表一个指向标准输入（键盘）的指针</p>
+<p>stdout代表一个指向标准输出（屏幕）的指针</p>
+<p>stderr代表一个指向标准错误（也是屏幕）的指针</p>
+<table>
+<thead>
+<tr>
+<th>函数声明</th>
+<th>具体作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int getchar(void)</td>
+<td>返回下一个输入单个字符的值</td>
+</tr>
+<tr>
+<td>int putchar(int c)</td>
+<td>输出单个字符c</td>
+</tr>
+<tr>
+<td>char *gets(char *s)</td>
+<td>从stdin读取一行到s，若出错返回NULL，否则s</td>
+</tr>
+<tr>
+<td>int puts(const char *s)</td>
+<td>向stdout写入字符串s和一个换行，返回输出的字符数量</td>
+</tr>
+<tr>
+<td>int scanf(const char *format, …)</td>
+<td>从stdin读入符合format规则的输入至之后的地址，返回成功读入的变量数量</td>
+</tr>
+<tr>
+<td>int printf(const char *format, …)</td>
+<td>根据format规则输出到stdout，返回成功打印的字符数量。</td>
+</tr>
+</tbody></table>
+<p>然后是来自string.h的字符串函数</p>
+<p>size_t是头文件中用来保存大小的类型，是sizeof()的结果</p>
+<table>
+<thead>
+<tr>
+<th>函数声明</th>
+<th>具体作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>size_t strlen(const char *str)</td>
+<td>返回str指向的字符串的长度</td>
+</tr>
+<tr>
+<td>int strcmp(const char* s1, const char* s2)</td>
+<td>比较s1和s2指向的字符串，返回0代表相等</td>
+</tr>
+<tr>
+<td>char <em>strcpy(char</em> dst, const char*src)</td>
+<td>将src所指的字符串复制到dst</td>
+</tr>
+<tr>
+<td>void *memset(void *str,int c, size_t n)</td>
+<td>复制c到str的前n个字符</td>
+</tr>
+</tbody></table>
+<h3 id="前置知识-2"><a href="#前置知识-2" class="headerlink" title="前置知识-2"></a>前置知识-2</h3><h5 id="c语言中的位运算"><a href="#c语言中的位运算" class="headerlink" title="c语言中的位运算"></a>c语言中的位运算</h5><p>和他的名字一样，位运算就是对变量中的位进行运算。位运算符号一共有6种，如下表</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&amp; 与</td>
+<td>位都为1结果才位1</td>
+</tr>
+<tr>
+<td>| 或</td>
+<td>位存在1结果为1</td>
+</tr>
+<tr>
+<td>^ 异或</td>
+<td>位不同则结果为1</td>
+</tr>
+<tr>
+<td>~ 取反</td>
+<td>0-&gt;1, 1-&gt;0</td>
+</tr>
+<tr>
+<td>&lt;&lt; 左移</td>
+<td>二进制位左移若干位</td>
+</tr>
+<tr>
+<td>&gt;&gt; 右移</td>
+<td>二进制位右移若干位，注意有符号数高位补符号位，无符号数高位补0</td>
+</tr>
+</tbody></table>
+<p>接下来是每种运算符的运算演示</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&amp;:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">|:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">^:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span></span><br><span class="line">注: c = a ^ b</span><br><span class="line">则  a ^ c == b</span><br><span class="line">    </span><br><span class="line">~:</span><br><span class="line"><span class="type">char</span> a = <span class="number">0x12</span> <span class="comment">/*(0 0 0 1 0 0 1 0)*/</span>;</span><br><span class="line">	 a = ~a;</span><br><span class="line">    a == <span class="number">0xED</span> <span class="comment">/*(1 1 1 0 1 1 0 1)*/</span>;</span><br><span class="line"></span><br><span class="line">&lt;&lt;:</span><br><span class="line"><span class="type">char</span> a = <span class="number">0x12</span> <span class="comment">/*(0 0 0 1 0 0 1 0)*/</span>;</span><br><span class="line">	 a = a &lt;&lt; <span class="number">2</span>;</span><br><span class="line">    a == <span class="number">0x48</span> <span class="comment">/*(0 1 0 0 1 0 0 0)*/</span>;</span><br><span class="line"></span><br><span class="line">&gt;&gt;:</span><br><span class="line"><span class="type">char</span>          a = <span class="number">0x89</span> <span class="comment">/*(1 0 0 0 1 0 0 1)*/</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> b = <span class="number">0x89</span> <span class="comment">/*(1 0 0 0 1 0 0 1)*/</span>;</span><br><span class="line">              a = a &gt;&gt; <span class="number">2</span>;</span><br><span class="line">              b = b &gt;&gt; <span class="number">2</span>;</span><br><span class="line">             a == <span class="number">0xE2</span> <span class="comment">/*(1 1 1 0 0 0 1 0)*/</span>;</span><br><span class="line">             b == <span class="number">0x22</span> <span class="comment">/*(0 0 1 0 0 0 1 0)*/</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h3 id="例题-test-your-ida-exe"><a href="#例题-test-your-ida-exe" class="headerlink" title="例题-test_your_ida.exe"></a>例题-test_your_ida.exe</h3><p>测试ida是否正常运行的题，对main函数按下F5得到flag。</p>
+<h3 id="例题-ida-PRO-exe"><a href="#例题-ida-PRO-exe" class="headerlink" title="例题-ida_PRO.exe"></a>例题-ida_PRO.exe</h3><p>根据提示，main函数在按下F5后得到第一部分flag，按下shift + f12查看字符串得到第二部分flag，注意到字符串里有个让我们按x查引用的字符串，对他按x进入函数后得到最后一部分flag。</p>
+<h3 id="例题-bit-operation-exe"><a href="#例题-bit-operation-exe" class="headerlink" title="例题-bit_operation.exe"></a>例题-bit_operation.exe</h3><p>由strlen的判断得知flag长度为37.</p>
+<p>观察加密函数encrypto发现每个字符都被前四位和后四位调换后异或上了0x11,故考虑将其先异或0x11再进行前四位和后四位调换以获得flag。</p>
+]]></content>
+      <categories>
+        <category>Reverse</category>
+      </categories>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Reverse</tag>
+      </tags>
+  </entry>
+</search>
