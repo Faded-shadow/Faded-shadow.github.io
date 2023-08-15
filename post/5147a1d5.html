@@ -19,25 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Hello World!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Shen_Fan&#39;s blog">
-<meta property="og:url" content="http://example.com/index.html">
+    <meta name="description" content="2023SharkCTF-week1-Reverse-XOR详解2023.8.15 by Shen_Fan  经过第一周的学习，相信大家对逆向工程都有了一个初步的了解。考虑到很多人都是还没入学的新生，这篇wp将更多地聚焦于工具的使用与代码的阅读而非flag如何获取。 由于时间有限，只能针对有人提出的XOR进行详解，若有其他问题欢迎来群里私戳我。 XOR0b0程序逻辑详解原本是第二周的签到题，由于一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023SharkCTF-week1-Reverse-XOR详解">
+<meta property="og:url" content="http://example.com/post/5147a1d5.html">
 <meta property="og:site_name" content="Shen_Fan&#39;s blog">
-<meta property="og:description" content="Hello World!">
+<meta property="og:description" content="2023SharkCTF-week1-Reverse-XOR详解2023.8.15 by Shen_Fan  经过第一周的学习，相信大家对逆向工程都有了一个初步的了解。考虑到很多人都是还没入学的新生，这篇wp将更多地聚焦于工具的使用与代码的阅读而非flag如何获取。 由于时间有限，只能针对有人提出的XOR进行详解，若有其他问题欢迎来群里私戳我。 XOR0b0程序逻辑详解原本是第二周的签到题，由于一">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-15T06:45:13.000Z">
+<meta property="article:modified_time" content="2023-08-15T09:51:21.014Z">
 <meta property="article:author" content="Shen_Fan">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Reverse">
+<meta property="article:tag" content="SharkCTF2023">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/post/5147a1d5.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/post/5147a1d5.html","path":"post/5147a1d5.html","title":"2023SharkCTF-week1-Reverse-XOR详解"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Shen_Fan's blog</title>
+<title>2023SharkCTF-week1-Reverse-XOR详解 | Shen_Fan's blog</title>
   
 
 
@@ -70,7 +75,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Shen_Fan's blog</h1>
+      <p class="site-title">Shen_Fan's blog</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -96,7 +101,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -109,6 +114,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2023SharkCTF-week1-Reverse-XOR%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">2023SharkCTF-week1-Reverse-XOR详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XOR"><span class="nav-number">1.1.</span> <span class="nav-text">XOR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0b0%E7%A8%8B%E5%BA%8F%E9%80%BB%E8%BE%91%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.1.1.</span> <span class="nav-text">0b0程序逻辑详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0b1%E6%89%80%E4%BB%A5%E8%A6%81%E6%80%8E%E4%B9%88%E5%86%99%E5%91%A2%EF%BC%9F"><span class="nav-number">1.1.2.</span> <span class="nav-text">0b1所以要怎么写呢？</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -150,16 +156,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/post/5147a1d5.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -173,13 +180,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shen_Fan's blog">
+      <meta itemprop="name" content="2023SharkCTF-week1-Reverse-XOR详解 | Shen_Fan's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/post/5147a1d5.html" class="post-title-link" itemprop="url">2023SharkCTF-week1-Reverse-XOR详解</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          2023SharkCTF-week1-Reverse-XOR详解
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -211,8 +218,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="2023SharkCTF-week1-Reverse-XOR详解"><a href="#2023SharkCTF-week1-Reverse-XOR详解" class="headerlink" title="2023SharkCTF-week1-Reverse-XOR详解"></a>2023SharkCTF-week1-Reverse-XOR详解</h1><p>2023.8.15 by Shen_Fan</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="2023SharkCTF-week1-Reverse-XOR详解"><a href="#2023SharkCTF-week1-Reverse-XOR详解" class="headerlink" title="2023SharkCTF-week1-Reverse-XOR详解"></a>2023SharkCTF-week1-Reverse-XOR详解</h1><p>2023.8.15 by Shen_Fan</p>
 <hr>
 <p>经过第一周的学习，相信大家对逆向工程都有了一个初步的了解。考虑到很多人都是还没入学的新生，这篇wp将更多地聚焦于工具的使用与代码的阅读而非flag如何获取。</p>
 <p>由于时间有限，只能针对有人提出的XOR进行详解，若有其他问题欢迎来群里私戳我。</p>
@@ -309,7 +315,6 @@
 
 <p>得到flag: sharkctf{x0r_1s_1nt3rest1ng}</p>
 
-      
     </div>
 
     
@@ -317,346 +322,23 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/Reverse/" rel="tag"># Reverse</a>
+              <a href="/tags/SharkCTF2023/" rel="tag"># SharkCTF2023</a>
+          </div>
 
+        
 
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/post/4c5ffb3d.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pic.jpg">
-      <meta itemprop="name" content="Shen_Fan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shen_Fan's blog">
-      <meta itemprop="description" content="Hello World!">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shen_Fan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/post/4c5ffb3d.html" class="post-title-link" itemprop="url">2023Asuri暑假培训-Reverse-1</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-08-11 13:18:51" itemprop="dateCreated datePublished" datetime="2023-08-11T13:18:51+08:00">2023-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-08-12 18:10:03" itemprop="dateModified" datetime="2023-08-12T18:10:03+08:00">2023-08-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Reverse/" itemprop="url" rel="index"><span itemprop="name">Reverse</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Re-静态分析入门-1"><a href="#Re-静态分析入门-1" class="headerlink" title="Re-静态分析入门-1"></a>Re-静态分析入门-1</h1><p>2023.8.5 by Shen_Fan</p>
-<hr>
-<p>[TOC]</p>
-<h3 id="前置知识-1"><a href="#前置知识-1" class="headerlink" title="前置知识-1"></a>前置知识-1</h3><h4 id="0x1-一段C代码是如何跑起来的"><a href="#0x1-一段C代码是如何跑起来的" class="headerlink" title="0x1 一段C代码是如何跑起来的"></a>0x1 一段C代码是如何跑起来的</h4><p>*以下内容仅作了解</p>
-<p>以下是我们作为示例的一段c代码hello.c</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World!&quot;</span>); <span class="comment">//打印Hello World!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>C语言不像python，python作为一门脚本语言，拥有自己的专用解释器来运行。所有的代码会在转换后喂给解释器，再由解释器解释运行。而C语言需要经过编译直接转化为最底层的机器代码，直接喂给CPU运行。因此，C语言的效率远高于python。</p>
-<p>C语言一般的编译过程如图：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">src[源代码.c]--预处理--&gt;o[预处理文件.i]--编译--&gt;s[汇编.s]--汇编&amp;链接--&gt;e[可执行文件]</span><br></pre></td></tr></table></figure>
-
-<p>接下来，我们将一步步分析编译的过程。</p>
-<h5 id="0b01-预处理"><a href="#0b01-预处理" class="headerlink" title="0b01 预处理"></a>0b01 预处理</h5><p>1.删除所有的注释</p>
-<p>2.拓展宏（#define语句）</p>
-<p>3.包含文件(#include语句)</p>
-<p>经过预处理的hello.i文件：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">9</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">3</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/crtdefs.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下省略若干行</span></span><br><span class="line"></span><br><span class="line"># <span class="number">1398</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/_mingw_print_pop.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">1400</span> <span class="string">&quot;E:/mingw64/x86_64-w64-mingw32/include/stdio.h&quot;</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;hello_world.c&quot;</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># <span class="number">3</span> <span class="string">&quot;hello_world.c&quot;</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="0b10-编译"><a href="#0b10-编译" class="headerlink" title="0b10 编译"></a>0b10 编译</h5><p>编译过程会将预处理文件转化为汇编语言。汇编代码是一门面向底层的低级语言。语句较为简单，例如把某个数字存到寄存器，把寄存器的某些值进行数学运算等等。</p>
-<p>hello.i编译得到的汇编文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">	.file	&quot;hello_world.c&quot;</span><br><span class="line">	.text</span><br><span class="line">	.def	__main;	.scl	2;	.type	32;	.endef</span><br><span class="line">	.section .rdata,&quot;dr&quot;</span><br><span class="line">.LC0:</span><br><span class="line">	.ascii &quot;hello world!\0&quot;</span><br><span class="line">	.text</span><br><span class="line">	.globl	main</span><br><span class="line">	.def	main;	.scl	2;	.type	32;	.endef</span><br><span class="line">	.seh_proc	main</span><br><span class="line">main:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	.seh_pushreg	%rbp</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	.seh_setframe	%rbp, 0</span><br><span class="line">	subq	$32, %rsp</span><br><span class="line">	.seh_stackalloc	32</span><br><span class="line">	.seh_endprologue</span><br><span class="line">	call	__main</span><br><span class="line">	leaq	.LC0(%rip), %rcx</span><br><span class="line">	call	printf</span><br><span class="line">	movl	$0, %eax</span><br><span class="line">	addq	$32, %rsp</span><br><span class="line">	popq	%rbp</span><br><span class="line">	ret</span><br><span class="line">	.seh_endproc</span><br><span class="line">	.ident	&quot;GCC: (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0&quot;</span><br><span class="line">	.def	printf;	.scl	2;	.type	32;	.endef</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h5 id="0b11-汇编-链接"><a href="#0b11-汇编-链接" class="headerlink" title="0b11 汇编&amp;链接"></a>0b11 汇编&amp;链接</h5><p>首先，汇编程序将.s文件转化为二进制的目标文件（.o），然后链接器将库或者是其他文件链接到该文件中产生可直接运行的程序（.exe等等）。</p>
-<p>当我们谈到运行C语言程序时，运行的就是最后得到的二进制文件而非从源代码开始再编译一遍。Reverse便是要从最后得到的二进制文件出发尝试还原源码的逻辑。</p>
-<p>IDA的功能便是以CPU的视角将二进制文件（一堆看上去意义不明的0和1）解析为一堆汇编代码，然后再根据逻辑划分程序的各个部分并试图还原C语言代码。但已经在编译过程中丢失的东西（如注释）都已经永远的被删除了，留下的只有IDA的推测。</p>
-<h4 id="0x2-IDA的基本使用方法"><a href="#0x2-IDA的基本使用方法" class="headerlink" title="0x2 IDA的基本使用方法"></a>0x2 IDA的基本使用方法</h4><p>如果你已经下载并查看过IDA，就会发现IDA拥有ida.exe和ida64.exe两个可执行文件。ida.exe用于32位的文件，ida64.exe用于64位的程序。若要查看某个程序是32位还是64位，可以使用exeinfope(仅适用于Windows)，linux下的控制台file指令，以及我正在研究的DIE-engine。</p>
-<p>将程序拖到IDA的exe文件上，ida就会识别这个程序的信息。一路ok过去后再等待一段时间，IDA就能成功反编译（也有可能寄了）这个程序。IDA的左侧为函数窗口，显示了程序中所有以及被识别了的函数（绝大多数会是库函数），以下为IDA的常用快捷键及功能：</p>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>F5</td>
-<td>一键反汇编当前函数并生成类c代码</td>
-</tr>
-<tr>
-<td>shift + F12</td>
-<td>一键显示程序中的所有字符串</td>
-</tr>
-<tr>
-<td>x</td>
-<td>选择某个函数或变量，查看程序所有用到这些的地方</td>
-</tr>
-<tr>
-<td>shift + e</td>
-<td>选中区域或变量，一键得到其中的数值</td>
-</tr>
-<tr>
-<td>&#x2F;</td>
-<td>在伪代码页面写下注释</td>
-</tr>
-<tr>
-<td>u</td>
-<td>将某个函数的定义取消</td>
-</tr>
-<tr>
-<td>p</td>
-<td>在此处定义函数</td>
-</tr>
-<tr>
-<td>c</td>
-<td>将机器码（16进制的一堆数值）编译为汇编代码</td>
-</tr>
-</tbody></table>
-<h4 id="0x3-C语言常见函数"><a href="#0x3-C语言常见函数" class="headerlink" title="0x3 C语言常见函数"></a>0x3 C语言常见函数</h4><p>首先向我们走来的是来自stdio.h的输入输出函数</p>
-<p>stdin代表一个指向标准输入（键盘）的指针</p>
-<p>stdout代表一个指向标准输出（屏幕）的指针</p>
-<p>stderr代表一个指向标准错误（也是屏幕）的指针</p>
-<table>
-<thead>
-<tr>
-<th>函数声明</th>
-<th>具体作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>int getchar(void)</td>
-<td>返回下一个输入单个字符的值</td>
-</tr>
-<tr>
-<td>int putchar(int c)</td>
-<td>输出单个字符c</td>
-</tr>
-<tr>
-<td>char *gets(char *s)</td>
-<td>从stdin读取一行到s，若出错返回NULL，否则s</td>
-</tr>
-<tr>
-<td>int puts(const char *s)</td>
-<td>向stdout写入字符串s和一个换行，返回输出的字符数量</td>
-</tr>
-<tr>
-<td>int scanf(const char *format, …)</td>
-<td>从stdin读入符合format规则的输入至之后的地址，返回成功读入的变量数量</td>
-</tr>
-<tr>
-<td>int printf(const char *format, …)</td>
-<td>根据format规则输出到stdout，返回成功打印的字符数量。</td>
-</tr>
-</tbody></table>
-<p>然后是来自string.h的字符串函数</p>
-<p>size_t是头文件中用来保存大小的类型，是sizeof()的结果</p>
-<table>
-<thead>
-<tr>
-<th>函数声明</th>
-<th>具体作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>size_t strlen(const char *str)</td>
-<td>返回str指向的字符串的长度</td>
-</tr>
-<tr>
-<td>int strcmp(const char* s1, const char* s2)</td>
-<td>比较s1和s2指向的字符串，返回0代表相等</td>
-</tr>
-<tr>
-<td>char <em>strcpy(char</em> dst, const char*src)</td>
-<td>将src所指的字符串复制到dst</td>
-</tr>
-<tr>
-<td>void *memset(void *str,int c, size_t n)</td>
-<td>复制c到str的前n个字符</td>
-</tr>
-</tbody></table>
-<h3 id="前置知识-2"><a href="#前置知识-2" class="headerlink" title="前置知识-2"></a>前置知识-2</h3><h5 id="c语言中的位运算"><a href="#c语言中的位运算" class="headerlink" title="c语言中的位运算"></a>c语言中的位运算</h5><p>和他的名字一样，位运算就是对变量中的位进行运算。位运算符号一共有6种，如下表</p>
-<table>
-<thead>
-<tr>
-<th>运算符</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&amp; 与</td>
-<td>位都为1结果才位1</td>
-</tr>
-<tr>
-<td>| 或</td>
-<td>位存在1结果为1</td>
-</tr>
-<tr>
-<td>^ 异或</td>
-<td>位不同则结果为1</td>
-</tr>
-<tr>
-<td>~ 取反</td>
-<td>0-&gt;1, 1-&gt;0</td>
-</tr>
-<tr>
-<td>&lt;&lt; 左移</td>
-<td>二进制位左移若干位</td>
-</tr>
-<tr>
-<td>&gt;&gt; 右移</td>
-<td>二进制位右移若干位，注意有符号数高位补符号位，无符号数高位补0</td>
-</tr>
-</tbody></table>
-<p>接下来是每种运算符的运算演示</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&amp;:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">|:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">^:</span><br><span class="line">(<span class="type">char</span>) <span class="number">0x12</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span><br><span class="line">(<span class="type">char</span>) <span class="number">0x6B</span>: <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    -----------------------------</span><br><span class="line">             <span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span></span><br><span class="line">注: c = a ^ b</span><br><span class="line">则  a ^ c == b</span><br><span class="line">    </span><br><span class="line">~:</span><br><span class="line"><span class="type">char</span> a = <span class="number">0x12</span> <span class="comment">/*(0 0 0 1 0 0 1 0)*/</span>;</span><br><span class="line">	 a = ~a;</span><br><span class="line">    a == <span class="number">0xED</span> <span class="comment">/*(1 1 1 0 1 1 0 1)*/</span>;</span><br><span class="line"></span><br><span class="line">&lt;&lt;:</span><br><span class="line"><span class="type">char</span> a = <span class="number">0x12</span> <span class="comment">/*(0 0 0 1 0 0 1 0)*/</span>;</span><br><span class="line">	 a = a &lt;&lt; <span class="number">2</span>;</span><br><span class="line">    a == <span class="number">0x48</span> <span class="comment">/*(0 1 0 0 1 0 0 0)*/</span>;</span><br><span class="line"></span><br><span class="line">&gt;&gt;:</span><br><span class="line"><span class="type">char</span>          a = <span class="number">0x89</span> <span class="comment">/*(1 0 0 0 1 0 0 1)*/</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> b = <span class="number">0x89</span> <span class="comment">/*(1 0 0 0 1 0 0 1)*/</span>;</span><br><span class="line">              a = a &gt;&gt; <span class="number">2</span>;</span><br><span class="line">              b = b &gt;&gt; <span class="number">2</span>;</span><br><span class="line">             a == <span class="number">0xE2</span> <span class="comment">/*(1 1 1 0 0 0 1 0)*/</span>;</span><br><span class="line">             b == <span class="number">0x22</span> <span class="comment">/*(0 0 1 0 0 0 1 0)*/</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<hr>
-<h3 id="例题-test-your-ida-exe"><a href="#例题-test-your-ida-exe" class="headerlink" title="例题-test_your_ida.exe"></a>例题-test_your_ida.exe</h3><p>测试ida是否正常运行的题，对main函数按下F5得到flag。</p>
-<h3 id="例题-ida-PRO-exe"><a href="#例题-ida-PRO-exe" class="headerlink" title="例题-ida_PRO.exe"></a>例题-ida_PRO.exe</h3><p>根据提示，main函数在按下F5后得到第一部分flag，按下shift + f12查看字符串得到第二部分flag，注意到字符串里有个让我们按x查引用的字符串，对他按x进入函数后得到最后一部分flag。</p>
-<h3 id="例题-bit-operation-exe"><a href="#例题-bit-operation-exe" class="headerlink" title="例题-bit_operation.exe"></a>例题-bit_operation.exe</h3><p>由strlen的判断得知flag长度为37.</p>
-<p>观察加密函数encrypto发现每个字符都被前四位和后四位调换后异或上了0x11,故考虑将其先异或0x11再进行前四位和后四位调换以获得flag。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/post/4a17b156.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/pic.jpg">
-      <meta itemprop="name" content="Shen_Fan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Shen_Fan's blog">
-      <meta itemprop="description" content="Hello World!">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Shen_Fan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/post/4a17b156.html" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-08-11 09:47:15 / 修改时间：11:24:00" itemprop="dateCreated datePublished" datetime="2023-08-11T09:47:15+08:00">2023-08-11</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/post/4c5ffb3d.html" rel="prev" title="2023Asuri暑假培训-Reverse-1">
+                  <i class="fa fa-angle-left"></i> 2023Asuri暑假培训-Reverse-1
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
@@ -665,6 +347,8 @@
 
 
 
+
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -716,7 +400,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Faded-shadow","repo":"Faded-shadow.github.io","client_id":"42eddc31ed5db4eab387","client_secret":"f22eda8a45eb2ef4b4f0b536e58bda5234b0b280","admin_user":"Faded-shadow","distraction_free_mode":true,"language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d1546d731a9f30cc80127d57142a482b"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Faded-shadow","repo":"Faded-shadow.github.io","client_id":"42eddc31ed5db4eab387","client_secret":"f22eda8a45eb2ef4b4f0b536e58bda5234b0b280","admin_user":"Faded-shadow","distraction_free_mode":true,"language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"3e5594d47bf080b964fc6f56b1f0a874"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
