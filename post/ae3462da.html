@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2023SharkCTF-week2-Reverse-wp2023.8.21 by Shen_Fan  before_main基本阅读ida反汇编代码逻辑后可以发现该程序读入一个字符串，然后使用sub_4015DA对字符串进行处理并返回一个指针作为处理后的结果，再将处理后的结果与Str2比较并输出正误。 sub_4015DA由标志性的base64字母表ABCDEFGHIJKLMNOPQRSTUVW">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023SharkCTF-week2-Reverse-wp">
+<meta property="og:url" content="http://example.com/post/ae3462da.html">
+<meta property="og:site_name" content="Shen_Fan&#39;s blog">
+<meta property="og:description" content="2023SharkCTF-week2-Reverse-wp2023.8.21 by Shen_Fan  before_main基本阅读ida反汇编代码逻辑后可以发现该程序读入一个字符串，然后使用sub_4015DA对字符串进行处理并返回一个指针作为处理后的结果，再将处理后的结果与Str2比较并输出正误。 sub_4015DA由标志性的base64字母表ABCDEFGHIJKLMNOPQRSTUVW">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-21T02:01:17.000Z">
+<meta property="article:modified_time" content="2023-08-21T03:15:10.100Z">
+<meta property="article:author" content="Shen_Fan">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Reverse">
+<meta property="article:tag" content="SharkCTF2023">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/post/ae3462da.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/post/ae3462da.html","path":"post/ae3462da.html","title":"2023SharkCTF-week2-Reverse-wp"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2023SharkCTF-week2-Reverse-wp | Shen_Fan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shen_Fan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a></li><li class="menu-item menu-item-link"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2023SharkCTF-week2-Reverse-wp"><span class="nav-number">1.</span> <span class="nav-text">2023SharkCTF-week2-Reverse-wp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#before-main"><span class="nav-number">1.1.</span> <span class="nav-text">before_main</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-cup-of-tea"><span class="nav-number">1.2.</span> <span class="nav-text">a_cup_of_tea</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ez-maze"><span class="nav-number">1.3.</span> <span class="nav-text">ez_maze</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hungry-Snake"><span class="nav-number">1.4.</span> <span class="nav-text">Hungry_Snake</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Shen_Fan"
+      src="/images/pic.jpg">
+  <p class="site-author-name" itemprop="name">Shen_Fan</p>
+  <div class="site-description" itemprop="description">Hello World!</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/post/ae3462da.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pic.jpg">
+      <meta itemprop="name" content="Shen_Fan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shen_Fan's blog">
+      <meta itemprop="description" content="Hello World!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2023SharkCTF-week2-Reverse-wp | Shen_Fan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2023SharkCTF-week2-Reverse-wp
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-08-21 10:01:17 / 修改时间：11:15:10" itemprop="dateCreated datePublished" datetime="2023-08-21T10:01:17+08:00">2023-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Reverse/" itemprop="url" rel="index"><span itemprop="name">Reverse</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="2023SharkCTF-week2-Reverse-wp"><a href="#2023SharkCTF-week2-Reverse-wp" class="headerlink" title="2023SharkCTF-week2-Reverse-wp"></a>2023SharkCTF-week2-Reverse-wp</h1><p>2023.8.21 by Shen_Fan</p>
+<hr>
+<h2 id="before-main"><a href="#before-main" class="headerlink" title="before_main"></a>before_main</h2><p>基本阅读ida反汇编代码逻辑后可以发现该程序读入一个字符串，然后使用sub_4015DA对字符串进行处理并返回一个指针作为处理后的结果，再将处理后的结果与Str2比较并输出正误。</p>
+<p>sub_4015DA由标志性的base64字母表ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+&#x2F;与Str2的形态可以确定为未换表的base64，考虑直接对Str2解密。</p>
+<p>解密后得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh@rkctf&#123;something_run_before_main!&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并且输入程序时显示flag错误，鉴定为假flag。</p>
+<p>对Str2查找交叉引用发现一个函数对Str2进行了赋值，猜测该函数在main前运行，对该函数中的赋值进行base64解密得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sharkctf&#123;N3w_Bln7_l3_S0_us3fv1_iN_Pr07r@mlng&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获得flag。</p>
+<h2 id="a-cup-of-tea"><a href="#a-cup-of-tea" class="headerlink" title="a_cup_of_tea"></a>a_cup_of_tea</h2><p>分析ida返回表代码逻辑后发现程序读入一个字符串，并在判断长度是否为23后将其与一个局部变量数组一起传入一个encrypt函数，然后将Str数组的前16个字节与res数组比较后输出正误</p>
+<p>（为啥23字节的数组最后只比对了前16个字节呢，因为有人出题出傻了，给各位师傅磕头了）</p>
+<p>对encrypt函数进行简单逆向后得到解密函数（也可以直接照抄ctf-wiki上tea加密的解密函数）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">decrypt</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> *a1, <span class="type">unsigned</span> <span class="type">int</span>* a2)</span> &#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> v4=<span class="number">0</span>;</span><br><span class="line">    v4 -= <span class="number">0x20</span>*<span class="number">1640531527</span>;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> v5 = a1[<span class="number">1</span>];</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> v6 = *a1;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=<span class="number">0x1f</span>;++i) &#123;</span><br><span class="line">        v5-=(v6 + v4) ^ (a2[<span class="number">2</span>] + <span class="number">16</span> * v6) ^ ((v6 &gt;&gt; <span class="number">5</span>) + a2[<span class="number">3</span>]);</span><br><span class="line">        v6-=(v5 + v4) ^ (*a2 + <span class="number">16</span> * v5) ^ ((v5 &gt;&gt; <span class="number">5</span>) + a2[<span class="number">1</span>]);</span><br><span class="line">        v4+=<span class="number">1640531527</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    *a1=v6;</span><br><span class="line">    a1[<span class="number">1</span>]=v5;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解密后得到flag</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i7_IS_JuSt_4_CUP</span><br></pre></td></tr></table></figure>
+
+<p>结合hint得到最终flag</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sharkctf&#123;i7_IS_JuSt_4_CUP_Of_7e4&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ez-maze"><a href="#ez-maze" class="headerlink" title="ez_maze"></a>ez_maze</h2><p>分析逻辑后得知该迷宫由数字0123操作，否则会报出”invalid move”退出，对应的操作下的变量v5猜测为当前位置。0对应+1，向右；1对应-1，向左；2对应-6，猜测为向上；3对应+6，猜测为向下。那么迷宫的列数应该为6，这样+6或-6可以在行之间移动。 当v5&#x3D;5时循环退出，猜测位置5为终点。迷宫的逻辑为将当前位置与0x2a异或，若异或结果为0，则输出hit the wall并退出。最终退出循环时若位置为5且无多余步骤，就输出flag。</p>
+<p>考虑直接拷贝迷宫手动走，墙为0x2a，将进行与0x2a异或的数组byte_403020提取得：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">char</span> ida_chars[] =</span><br><span class="line">&#123;</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>稍微排版一下让列数为6</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">char</span> ida_chars[] =</span><br><span class="line">&#123;</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x2A</span>, </span><br><span class="line">  <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x2A</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>可以观察到唯一道路的迷宫，手动走出flag:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sharkctf&#123;<span class="number">003313300022220</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Hungry-Snake"><a href="#Hungry-Snake" class="headerlink" title="Hungry_Snake"></a>Hungry_Snake</h2><p>本周的压轴题，由于第二周的签到题离奇消失临时整的。</p>
+<p>本题的难度主要在于在屎山一般的代码中寻找flag加密的主逻辑并写脚本恢复，</p>
+<p>题目给出了结构体信息，先找教程在ida中恢复结构体（你也不想盯着一堆偏移硬看吧）</p>
+<p>对于较为复杂的题目，我们一般从flag的输入和输出下手，追踪flag去了哪里并分析其逻辑，这里从输入入手。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;flag:&quot;</span>);</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%60s&quot;</span>, Str);</span><br><span class="line"><span class="keyword">if</span> ( <span class="built_in">strlen</span>(Str) == <span class="number">45</span> )</span><br></pre></td></tr></table></figure>
+
+<p>首先flag被scanf读入至数组Str，然后对Str进行了长度判断</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gameInit(Str);</span><br></pre></td></tr></table></figure>
+
+<p>下一次也是最后一次出现时是在游戏初始化过程，由于Str为局部变量一般不会被其他函数访问，可以考虑Str通过游戏初始化被完全转移了。</p>
+<p>进入gameInit函数并只关注与他参数有关的代码部分</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memset</span>(&amp;game.in[game.total], <span class="number">0</span>, <span class="number">0x30</span>ui64);</span><br><span class="line"><span class="built_in">strcpy</span>(&amp;game.in[game.total], a1);</span><br></pre></td></tr></table></figure>
+
+<p>结合上文</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">game.width = <span class="number">16</span>;</span><br><span class="line">game.height = <span class="number">16</span>;</span><br><span class="line">game.total = game.height * game.width;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">game.in = (<span class="type">char</span> *)<span class="built_in">malloc</span>(game.total + <span class="number">48</span>i64);</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="built_in">memset</span>(game.in, <span class="number">46</span>, game.total);</span><br></pre></td></tr></table></figure>
+
+<p>得知game.in为新分配的一块大小为地图大小+48字节的内存，而game.in前game.total字节被设置为’.’，猜测为存储地图，之后的48字节由上面的strcpy(&amp;game.in[game.total], a1);猜测为存储输入的flag。</p>
+<p>之后线索断了，但我们知道应该去game.in偏移为game.total的地方找我们的输入</p>
+<p>查看游戏主循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">scanKey();</span><br><span class="line">v6 = moveSnake();</span><br><span class="line"><span class="keyword">if</span> ( v6 == <span class="number">-1</span> )</span><br><span class="line">&#123;</span><br><span class="line">  SetConsoleActiveScreenBuffer(game.hOutPut);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;You lose!&quot;</span>);</span><br><span class="line">  system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> ( v6 == <span class="number">1</span> )</span><br><span class="line">  <span class="keyword">break</span>;</span><br><span class="line">printMap();</span><br><span class="line">delay((<span class="type">unsigned</span> <span class="type">int</span>)game.delay_time);</span><br></pre></td></tr></table></figure>
+
+<p>scanKey经查看发现只获取输入并按一定规则改变蛇的方向。printMap仅仅是将game.in的前game.total字节输出，故排除。</p>
+<p>moveSnake函数中没有直接使用game.in中的game.total以后的部分，但是在贪吃蛇所处位置值为’*’后，该函数会调用一个updateMap函数，进入后发现该函数即为对game.in的game.total偏移进行加密的函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">updateMap</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> __int64 result; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">int</span> delay_time; <span class="comment">// [rsp+0h] [rbp-30h]</span></span><br><span class="line">  <span class="type">int</span> total; <span class="comment">// [rsp+Ch] [rbp-24h]</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v3; <span class="comment">// [rsp+18h] [rbp-18h]</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v4; <span class="comment">// [rsp+1Ch] [rbp-14h]</span></span><br><span class="line">  <span class="type">char</span> *v5; <span class="comment">// [rsp+20h] [rbp-10h]</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> i; <span class="comment">// [rsp+2Ch] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  v5 = &amp;game.in[game.total];</span><br><span class="line">  delay_time = game.delay_time;</span><br><span class="line">  result = (<span class="type">unsigned</span> <span class="type">int</span>)game.total;</span><br><span class="line">  total = game.total;</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">5</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = *((_DWORD *)v5 + <span class="number">1</span>);</span><br><span class="line">    v4 = ((v3 + ((v3 &gt;&gt; <span class="number">5</span>) ^ (<span class="number">16</span> * v3))) ^ delay_time) + *(_DWORD *)v5;</span><br><span class="line">    *(_DWORD *)v5 = v4;</span><br><span class="line">    result = (<span class="type">unsigned</span> __int64)(v5 + <span class="number">4</span>);</span><br><span class="line">    *((_DWORD *)v5 + <span class="number">1</span>) = ((v4 + ((v4 &gt;&gt; <span class="number">5</span>) ^ (<span class="number">16</span> * v4))) ^ (total - <span class="number">1640531527</span>)) + v3;</span><br><span class="line">    v5 += <span class="number">8</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意到加密过程中的部分密钥来自于game结构体的一些内容，需要注意。</p>
+<p>除此以外没有其他部分再使用game.total以后的内容，故猜测flag仅进行了这一次加密。</p>
+<p>游戏胜利结束后，main会调用一个checkFlag函数对game.in的game.total偏移后的内容与一个数组aetx进行比较并返回结果，故猜测aetx为flag加密后的结果。</p>
+<p>回看加密，该加密每次吃到东西都会调用一次，结合胜利条件game.snake.len&#x3D;game.total可知总调用次数为255次(初始长度为1)，同时加密过程中所使用的delay_time初始值为190，之后递减10至50胡便不会变化。针对以上特征编写解密脚本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> aetx_[] =</span><br><span class="line">&#123;</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0xDB</span>, <span class="number">0x3A</span>, <span class="number">0x03</span>, <span class="number">0x2A</span>, <span class="number">0x61</span>, <span class="number">0x35</span>, <span class="number">0x8C</span>, <span class="number">0xBF</span>, <span class="number">0xA0</span>, </span><br><span class="line">  <span class="number">0x49</span>, <span class="number">0x11</span>, <span class="number">0xD6</span>, <span class="number">0x4D</span>, <span class="number">0xD3</span>, <span class="number">0x73</span>, <span class="number">0x37</span>, <span class="number">0x48</span>, <span class="number">0xD8</span>, <span class="number">0x6C</span>, </span><br><span class="line">  <span class="number">0xFF</span>, <span class="number">0x91</span>, <span class="number">0xB6</span>, <span class="number">0x0D</span>, <span class="number">0x88</span>, <span class="number">0x1B</span>, <span class="number">0x0E</span>, <span class="number">0x85</span>, <span class="number">0x1E</span>, <span class="number">0xA4</span>, </span><br><span class="line">  <span class="number">0xE6</span>, <span class="number">0x59</span>, <span class="number">0xF1</span>, <span class="number">0x64</span>, <span class="number">0xE8</span>, <span class="number">0x03</span>, <span class="number">0xD8</span>, <span class="number">0xF3</span>, <span class="number">0x4F</span>, <span class="number">0xE5</span>, </span><br><span class="line">  <span class="number">0x9E</span>, <span class="number">0x34</span>, <span class="number">0xFA</span>, <span class="number">0x44</span>, <span class="number">0xA6</span>, <span class="number">0xDF</span>, <span class="number">0xDC</span>, <span class="number">0x08</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, </span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span>* aetx = (<span class="type">unsigned</span> <span class="type">int</span>*)aetx_;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">255</span>;i++) &#123;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span>* v5 = aetx + <span class="number">12</span>;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> delay_time = i&lt;<span class="number">240</span>?<span class="number">50</span>:<span class="number">50</span>+(i<span class="number">-240</span>)*<span class="number">10</span>;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> total = <span class="number">256</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;=<span class="number">5</span>;j++) &#123;</span><br><span class="line">            v5-=<span class="number">2</span>;</span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> v4 = *v5;</span><br><span class="line">            v5[<span class="number">1</span>] -= ((v4 + ((v4 &gt;&gt; <span class="number">5</span>) ^ (<span class="number">16</span> * v4))) ^ (total - <span class="number">1640531527</span>));</span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> v3 = v5[<span class="number">1</span>];</span><br><span class="line">            *v5-=((v3 + ((v3 &gt;&gt; <span class="number">5</span>) ^ (<span class="number">16</span> * v3))) ^ delay_time);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>((<span class="type">char</span>*)aetx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到最终flag:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sharkctf&#123;WoW_yOU_arE_pl4y1NG_Sn@kE_5o_w3ll!!&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/Reverse/" rel="tag"># Reverse</a>
+              <a href="/tags/SharkCTF2023/" rel="tag"># SharkCTF2023</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/post/5147a1d5.html" rel="prev" title="2023SharkCTF-week1-Reverse-XOR详解">
+                  <i class="fa fa-angle-left"></i> 2023SharkCTF-week1-Reverse-XOR详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Shen_Fan</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Faded-shadow","repo":"Faded-shadow.github.io","client_id":"42eddc31ed5db4eab387","client_secret":"f22eda8a45eb2ef4b4f0b536e58bda5234b0b280","admin_user":"Faded-shadow","distraction_free_mode":true,"language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"94b193ed8a00733726dfdc5db5d0ea3b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+
+<!--动态线条背景-->
+<script type="text/javascript"
+color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+</html>
