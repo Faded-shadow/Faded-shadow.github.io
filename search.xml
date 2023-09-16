@@ -1,115 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>2023SharkCTF-week1-Reverse-XOR详解</title>
-    <url>/post/5147a1d5.html</url>
-    <content><![CDATA[<h1 id="2023SharkCTF-week1-Reverse-XOR详解"><a href="#2023SharkCTF-week1-Reverse-XOR详解" class="headerlink" title="2023SharkCTF-week1-Reverse-XOR详解"></a>2023SharkCTF-week1-Reverse-XOR详解</h1><p>2023.8.15 by Shen_Fan</p>
-<hr>
-<p>经过第一周的学习，相信大家对逆向工程都有了一个初步的了解。考虑到很多人都是还没入学的新生，这篇wp将更多地聚焦于工具的使用与代码的阅读而非flag如何获取。</p>
-<p>由于时间有限，只能针对有人提出的XOR进行详解，若有其他问题欢迎来群里私戳我。</p>
-<h2 id="XOR"><a href="#XOR" class="headerlink" title="XOR"></a>XOR</h2><h3 id="0b0程序逻辑详解"><a href="#0b0程序逻辑详解" class="headerlink" title="0b0程序逻辑详解"></a>0b0程序逻辑详解</h3><p>原本是第二周的签到题，由于一些失误导致被放到了第一周（不然第一周都是不用写脚本的简单题）。现在，我将逐行为各位讲解ida反汇编得到的类c代码</p>
-<p>首先，把XOR.exe拖到ida64.exe中，解析完成后按下<strong>F5</strong>查看类c代码。我们从第一行开始看起</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br></pre></td></tr></table></figure>
-
-<p>一开始是main函数的定义，第一个字符串”int”代表着该函数的返回值为int，第二个字符串”__cdecl”定义如下：</p>
-<blockquote>
-<p>__cdecl是C Declaration的缩写（declaration，声明），cdecl调用方式又称为C调用方式，是C语言缺省的调用方式。<br>他意味着：<br>（1）参数从右向左依次压入堆栈.<br>（2）由调用者恢复堆栈，称为手动清栈。<br>（3）函数名自动加前导下划线。</p>
-</blockquote>
-<p>缺省意味着该函数的某些参数可以留空，所以我们在编写程序时可以直接以int main(void) {}定义main函数</p>
-<p>第三个字符串main代表着该函数名为main，也是一般c&#x2F;c++程序中的入口函数（实际上并不是最先执行的函数，在第二周的某些题中就可看到[狗头]）。</p>
-<p>接下来的括号里则是main函数的三个参数，对于main函数，这些参数来自命令行和运行环境，有兴趣可以自行搜索了解。</p>
-<p>下一行的花括号代表从这里开始到一个’}’是main函数的定义部分，就是这个函数里有啥，干了啥。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> Str[<span class="number">48</span>]; <span class="comment">// [rsp+20h] [rbp-60h] BYREF</span></span><br><span class="line">__int16 v5; <span class="comment">// [rsp+50h] [rbp-30h]</span></span><br><span class="line"><span class="type">char</span> v6[<span class="number">36</span>]; <span class="comment">// [rsp+60h] [rbp-20h] BYREF</span></span><br><span class="line"><span class="type">int</span> j; <span class="comment">// [rsp+84h] [rbp+4h]</span></span><br><span class="line"><span class="type">int</span> i; <span class="comment">// [rsp+88h] [rbp+8h]</span></span><br><span class="line"><span class="type">char</span> v9; <span class="comment">// [rsp+8Eh] [rbp+Eh]</span></span><br><span class="line"><span class="type">char</span> v10; <span class="comment">// [rsp+8Fh] [rbp+Fh]</span></span><br></pre></td></tr></table></figure>
-
-<p>接下来是若干行变量的声明。ida所反汇编得到的代码通常会在最开始将所有变量都进行声明。例如第一行声明了一个名为”Str”的变量，他是char类型，长为48的数组。之后的注释[rsp+xxh]和[rbp+xxh]则是代表该变量在<strong>栈</strong>中的位置。对于Reverse方向的初学者，只需要知道rbp和rsp中分别保存了栈在内存中的起始位置和结束位置，而后面的注释表明了这个变量相对这两个地址的位置。栈通常用来保存局部变量，也就是只在这个函数中使用的变量。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">_main(argc, argv, envp);</span><br></pre></td></tr></table></figure>
-
-<p>用于初始化某些东西的函数，是由编译器生成的函数。re的一个难点便在于分辨人为书写的函数与库函数和编译器生成的函数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">qmemcpy(v6, <span class="string">&quot;qkdzfvVQ\&quot;&quot;</span>, <span class="number">9</span>);</span><br><span class="line">v6[<span class="number">9</span>] = <span class="number">-24</span>;</span><br><span class="line">v6[<span class="number">10</span>] = <span class="number">-39</span>;</span><br><span class="line">v6[<span class="number">11</span>] = <span class="number">11</span>;</span><br><span class="line">v6[<span class="number">12</span>] = <span class="number">61</span>;</span><br><span class="line">v6[<span class="number">13</span>] = <span class="number">-22</span>;</span><br><span class="line">v6[<span class="number">14</span>] = <span class="number">78</span>;</span><br><span class="line">v6[<span class="number">15</span>] = <span class="number">71</span>;</span><br><span class="line">v6[<span class="number">16</span>] = <span class="number">100</span>;</span><br><span class="line">v6[<span class="number">17</span>] = <span class="number">3</span>;</span><br><span class="line">v6[<span class="number">18</span>] = <span class="number">-74</span>;</span><br><span class="line">v6[<span class="number">19</span>] = <span class="number">28</span>;</span><br><span class="line">v6[<span class="number">20</span>] = <span class="number">-125</span>;</span><br><span class="line">v6[<span class="number">21</span>] = <span class="number">69</span>;</span><br><span class="line">v6[<span class="number">22</span>] = <span class="number">98</span>;</span><br><span class="line">v6[<span class="number">23</span>] = <span class="number">69</span>;</span><br><span class="line">v6[<span class="number">24</span>] = <span class="number">115</span>;</span><br><span class="line">v6[<span class="number">25</span>] = <span class="number">29</span>;</span><br><span class="line">v6[<span class="number">26</span>] = <span class="number">-46</span>;</span><br><span class="line">v6[<span class="number">27</span>] = <span class="number">85</span>;</span><br></pre></td></tr></table></figure>
-
-<p>qmemcpy和memcpy的作用相同，都是从第二个参数复制第三个参数个字符到第一个参数所代表的地址。在这里，就是将字符串qkdzfvVQ”（由于字符串内不能直接出现”，会与字符串的头和尾混淆，所以使用转义符\配上”来表面字符串中含有双引号）这个长度为9的字符串复制到v6，也就是数组的前9个元素。之后的一系列赋值为v6的第10到28个元素赋值。</p>
-<p>顺带一提，对于数组，数组名代表这个数组的头的位置，数组名[i]代表取数组中第i+1个元素的值。数组中的第一个元素是数组名[0]</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">memset</span>(Str, <span class="number">0</span>, <span class="keyword">sizeof</span>(Str));</span><br><span class="line">v5 = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p>memset是memory set的缩写，和他的名字一样，他能够从内存中的某个位置开始，将之后的n个字节设置为指定值。在这里，他将Str数组的全部元素都设置为0。然后，程序将v5设置为0。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;input your flag:&quot;</span>);</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%40s&quot;</span>, Str);</span><br></pre></td></tr></table></figure>
-
-<p>printf打印了之后的信息，scanf前面的format代表其读入一个长度最长为40的字符串。之后的参数Str(正如之前所说，数组名代表了数组头的地址)代表了要读入到哪。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">v10 = <span class="number">1</span>;</span><br><span class="line">v9 = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-<p>为v10和v9赋值捏。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ( <span class="built_in">strlen</span>(Str) == <span class="number">28</span> )</span><br><span class="line">&#123;</span><br></pre></td></tr></table></figure>
-
-<p>if和它的字面意思相同，代表着”如果“，这里的strlen函数会读入一个字符串所在的地址，返回其长度。把这两个元素结合起来，这段代码的意思便是”如果Str字符串的长度为28则“。之后的’{‘代表着代码块的开始，直到和他对应的’}’出现前的内容都是条件成立后要执行的内容。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">27</span>; ++i )</span><br><span class="line">&#123;</span><br><span class="line">  Str[i] ^= v10 + v9;</span><br><span class="line">  v9 += v10;</span><br><span class="line">  v10 = v9 - v10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>for循环要求三个以;隔开的参数，第一个为初始化，在这里是将变量i的值初始化为0；第二个为循环条件，在这里为当i&lt;&#x3D;27时继续循环；第三个为每一轮循环结束后要执行的代码，在这里的++表示自增，在这里等价于i&#x3D;i+1。</p>
-<p>所以在这个循环中，i的值由0一路递增至27，并在i&#x3D;27的循环结束后自增到28终止循环</p>
-<p>之后的’{‘代表着一个代码块的起始，这个代码块是每一轮循环都要执行的。（代码块嵌套捏）</p>
-<p>首先，^&#x3D;是一种简写，Str[i] ^&#x3D; v10 + v9也可以写成 Str[i] &#x3D; Str[i] ^ (v10 + v9)。^在c中代表着异或操作，这里便是将Str数组中的第i个元素与v10+v9的和进行异或并赋值回去。</p>
-<p>之后的v9+&#x3D;v10;v10&#x3D;v9-v10便是对这两个变量所作的操作：先将v9加上v10的值并赋值给v9，再将v9-v10的值赋值给v10。两个变量在每次循环开始时的值如下表所示。</p>
-<table>
-<thead>
-<tr>
-<th>i</th>
-<th>v9</th>
-<th>v10</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-</tr>
-<tr>
-<td>2</td>
-<td>3</td>
-<td>2</td>
-</tr>
-<tr>
-<td>3</td>
-<td>5</td>
-<td>3</td>
-</tr>
-<tr>
-<td>4</td>
-<td>8</td>
-<td>5</td>
-</tr>
-</tbody></table>
-<p>看呐，斐波那契数列[狗头]</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">for</span> ( j = <span class="number">0</span>; j &lt;= <span class="number">27</span>; ++j )</span><br><span class="line">   &#123;</span><br><span class="line">     <span class="keyword">if</span> ( Str[j] != v6[j] )</span><br><span class="line">     &#123;</span><br><span class="line">       <span class="built_in">puts</span>(<span class="string">&quot;Your flag is wrong&quot;</span>);</span><br><span class="line">       system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">&quot;You&#x27;ve found the correct flag!&quot;</span>);</span><br><span class="line">   system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后的for循环中初始化了一个变量j，j的值也是从0一路递增至27，并在28时退出循环。底下的if比较了Str数组和v6数组的每一个元素是否不相等(!&#x3D;符号代表不相等)，若不相等，就输出flag错误。system(“pause”);时一个用于暂停程序的函数，防止命令行一闪而过直接退出看不清输出。之后的return 0则是一个函数返回其返回值。在这里，就算代表着main函数终止并返回0。从这段逻辑可以看出，Str作操作后应该和v6一模一样，不然程序就会提示你输错了。</p>
-<p>之后若循环顺利完成并因为j的值而终止，程序便会输出你的flag正确，然后暂停退出一条龙。</p>
-<p>最后的一个’}’终止最开始那个if下的代码块，</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;The length of your flag is wrong&quot;</span>);</span><br><span class="line">  system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>还记得之前那个对长度进行判断的if不，这是他的else。对于一个if-else语句当条件不成立时，程序便会跳到else部分执行。很合理（确信）。如果没有else那就直接忽略if下条件成立的代码继续往后执行。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>main函数的定义结束标记。和之前main后的那个’{‘相匹配。</p>
-<h3 id="0b1所以要怎么写呢？"><a href="#0b1所以要怎么写呢？" class="headerlink" title="0b1所以要怎么写呢？"></a>0b1所以要怎么写呢？</h3><p>上面的程序逻辑总结起来就是一句话：读入一个字符串，若长度正确，在对字符串进行xor后判断其结果和v6是否相等。由于xor的对称性质，我们可以将v6进行同等的xor得到应该输入的字符串。因此可以考虑直接将代码复制出来，只把输入由Str改为v6。</p>
-<p>脚本如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span> <span class="comment">//printf函数定义</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span> <span class="comment">//memcpy函数定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> v6[<span class="number">36</span>]= &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="type">char</span> v9=<span class="number">1</span>,v10=<span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="built_in">memcpy</span>(v6, <span class="string">&quot;qkdzfvVQ\&quot;&quot;</span>, <span class="number">9</span>);</span><br><span class="line">	v6[<span class="number">9</span>] = <span class="number">-24</span>;</span><br><span class="line">	v6[<span class="number">10</span>] = <span class="number">-39</span>;</span><br><span class="line">	v6[<span class="number">11</span>] = <span class="number">11</span>;</span><br><span class="line">	v6[<span class="number">12</span>] = <span class="number">61</span>;</span><br><span class="line">	v6[<span class="number">13</span>] = <span class="number">-22</span>;</span><br><span class="line">	v6[<span class="number">14</span>] = <span class="number">78</span>;</span><br><span class="line">	v6[<span class="number">15</span>] = <span class="number">71</span>;</span><br><span class="line">	v6[<span class="number">16</span>] = <span class="number">100</span>;</span><br><span class="line">	v6[<span class="number">17</span>] = <span class="number">3</span>;</span><br><span class="line">	v6[<span class="number">18</span>] = <span class="number">-74</span>;</span><br><span class="line">	v6[<span class="number">19</span>] = <span class="number">28</span>;</span><br><span class="line">	v6[<span class="number">20</span>] = <span class="number">-125</span>;</span><br><span class="line">	v6[<span class="number">21</span>] = <span class="number">69</span>;</span><br><span class="line">	v6[<span class="number">22</span>] = <span class="number">98</span>;</span><br><span class="line">	v6[<span class="number">23</span>] = <span class="number">69</span>;</span><br><span class="line">	v6[<span class="number">24</span>] = <span class="number">115</span>;</span><br><span class="line">	v6[<span class="number">25</span>] = <span class="number">29</span>;</span><br><span class="line">	v6[<span class="number">26</span>] = <span class="number">-46</span>;</span><br><span class="line">	v6[<span class="number">27</span>] = <span class="number">85</span>;</span><br><span class="line">	<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">27</span>; ++i ) &#123;</span><br><span class="line">		v6[i] ^= v10 + v9;</span><br><span class="line">		v9 += v10;</span><br><span class="line">		v10 = v9 - v10;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,v6);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>得到flag: sharkctf{x0r_1s_1nt3rest1ng}</p>
-]]></content>
-      <categories>
-        <category>Reverse</category>
-      </categories>
-      <tags>
-        <tag>CTF</tag>
-        <tag>Reverse</tag>
-        <tag>SharkCTF2023</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>2023Asuri暑假培训-Reverse-1</title>
     <url>/post/4c5ffb3d.html</url>
     <content><![CDATA[<h1 id="Re-静态分析入门-1"><a href="#Re-静态分析入门-1" class="headerlink" title="Re-静态分析入门-1"></a>Re-静态分析入门-1</h1><p>2023.8.5 by Shen_Fan</p>
@@ -450,6 +341,115 @@
 <p><img src="E:\MyProject\myBlog\myBlog-hexo\source\images\st_6.png" alt="st_6"></p>
 <p>然后在ida中Edit-&gt;Patch programe-&gt;Apply patched to…将patch覆盖到原程序文件</p>
 <p>运行一键得到flag</p>
+]]></content>
+      <categories>
+        <category>Reverse</category>
+      </categories>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Reverse</tag>
+        <tag>SharkCTF2023</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2023SharkCTF-week1-Reverse-XOR详解</title>
+    <url>/post/5147a1d5.html</url>
+    <content><![CDATA[<h1 id="2023SharkCTF-week1-Reverse-XOR详解"><a href="#2023SharkCTF-week1-Reverse-XOR详解" class="headerlink" title="2023SharkCTF-week1-Reverse-XOR详解"></a>2023SharkCTF-week1-Reverse-XOR详解</h1><p>2023.8.15 by Shen_Fan</p>
+<hr>
+<p>经过第一周的学习，相信大家对逆向工程都有了一个初步的了解。考虑到很多人都是还没入学的新生，这篇wp将更多地聚焦于工具的使用与代码的阅读而非flag如何获取。</p>
+<p>由于时间有限，只能针对有人提出的XOR进行详解，若有其他问题欢迎来群里私戳我。</p>
+<h2 id="XOR"><a href="#XOR" class="headerlink" title="XOR"></a>XOR</h2><h3 id="0b0程序逻辑详解"><a href="#0b0程序逻辑详解" class="headerlink" title="0b0程序逻辑详解"></a>0b0程序逻辑详解</h3><p>原本是第二周的签到题，由于一些失误导致被放到了第一周（不然第一周都是不用写脚本的简单题）。现在，我将逐行为各位讲解ida反汇编得到的类c代码</p>
+<p>首先，把XOR.exe拖到ida64.exe中，解析完成后按下<strong>F5</strong>查看类c代码。我们从第一行开始看起</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br></pre></td></tr></table></figure>
+
+<p>一开始是main函数的定义，第一个字符串”int”代表着该函数的返回值为int，第二个字符串”__cdecl”定义如下：</p>
+<blockquote>
+<p>__cdecl是C Declaration的缩写（declaration，声明），cdecl调用方式又称为C调用方式，是C语言缺省的调用方式。<br>他意味着：<br>（1）参数从右向左依次压入堆栈.<br>（2）由调用者恢复堆栈，称为手动清栈。<br>（3）函数名自动加前导下划线。</p>
+</blockquote>
+<p>缺省意味着该函数的某些参数可以留空，所以我们在编写程序时可以直接以int main(void) {}定义main函数</p>
+<p>第三个字符串main代表着该函数名为main，也是一般c&#x2F;c++程序中的入口函数（实际上并不是最先执行的函数，在第二周的某些题中就可看到[狗头]）。</p>
+<p>接下来的括号里则是main函数的三个参数，对于main函数，这些参数来自命令行和运行环境，有兴趣可以自行搜索了解。</p>
+<p>下一行的花括号代表从这里开始到一个’}’是main函数的定义部分，就是这个函数里有啥，干了啥。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> Str[<span class="number">48</span>]; <span class="comment">// [rsp+20h] [rbp-60h] BYREF</span></span><br><span class="line">__int16 v5; <span class="comment">// [rsp+50h] [rbp-30h]</span></span><br><span class="line"><span class="type">char</span> v6[<span class="number">36</span>]; <span class="comment">// [rsp+60h] [rbp-20h] BYREF</span></span><br><span class="line"><span class="type">int</span> j; <span class="comment">// [rsp+84h] [rbp+4h]</span></span><br><span class="line"><span class="type">int</span> i; <span class="comment">// [rsp+88h] [rbp+8h]</span></span><br><span class="line"><span class="type">char</span> v9; <span class="comment">// [rsp+8Eh] [rbp+Eh]</span></span><br><span class="line"><span class="type">char</span> v10; <span class="comment">// [rsp+8Fh] [rbp+Fh]</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来是若干行变量的声明。ida所反汇编得到的代码通常会在最开始将所有变量都进行声明。例如第一行声明了一个名为”Str”的变量，他是char类型，长为48的数组。之后的注释[rsp+xxh]和[rbp+xxh]则是代表该变量在<strong>栈</strong>中的位置。对于Reverse方向的初学者，只需要知道rbp和rsp中分别保存了栈在内存中的起始位置和结束位置，而后面的注释表明了这个变量相对这两个地址的位置。栈通常用来保存局部变量，也就是只在这个函数中使用的变量。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">_main(argc, argv, envp);</span><br></pre></td></tr></table></figure>
+
+<p>用于初始化某些东西的函数，是由编译器生成的函数。re的一个难点便在于分辨人为书写的函数与库函数和编译器生成的函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">qmemcpy(v6, <span class="string">&quot;qkdzfvVQ\&quot;&quot;</span>, <span class="number">9</span>);</span><br><span class="line">v6[<span class="number">9</span>] = <span class="number">-24</span>;</span><br><span class="line">v6[<span class="number">10</span>] = <span class="number">-39</span>;</span><br><span class="line">v6[<span class="number">11</span>] = <span class="number">11</span>;</span><br><span class="line">v6[<span class="number">12</span>] = <span class="number">61</span>;</span><br><span class="line">v6[<span class="number">13</span>] = <span class="number">-22</span>;</span><br><span class="line">v6[<span class="number">14</span>] = <span class="number">78</span>;</span><br><span class="line">v6[<span class="number">15</span>] = <span class="number">71</span>;</span><br><span class="line">v6[<span class="number">16</span>] = <span class="number">100</span>;</span><br><span class="line">v6[<span class="number">17</span>] = <span class="number">3</span>;</span><br><span class="line">v6[<span class="number">18</span>] = <span class="number">-74</span>;</span><br><span class="line">v6[<span class="number">19</span>] = <span class="number">28</span>;</span><br><span class="line">v6[<span class="number">20</span>] = <span class="number">-125</span>;</span><br><span class="line">v6[<span class="number">21</span>] = <span class="number">69</span>;</span><br><span class="line">v6[<span class="number">22</span>] = <span class="number">98</span>;</span><br><span class="line">v6[<span class="number">23</span>] = <span class="number">69</span>;</span><br><span class="line">v6[<span class="number">24</span>] = <span class="number">115</span>;</span><br><span class="line">v6[<span class="number">25</span>] = <span class="number">29</span>;</span><br><span class="line">v6[<span class="number">26</span>] = <span class="number">-46</span>;</span><br><span class="line">v6[<span class="number">27</span>] = <span class="number">85</span>;</span><br></pre></td></tr></table></figure>
+
+<p>qmemcpy和memcpy的作用相同，都是从第二个参数复制第三个参数个字符到第一个参数所代表的地址。在这里，就是将字符串qkdzfvVQ”（由于字符串内不能直接出现”，会与字符串的头和尾混淆，所以使用转义符\配上”来表面字符串中含有双引号）这个长度为9的字符串复制到v6，也就是数组的前9个元素。之后的一系列赋值为v6的第10到28个元素赋值。</p>
+<p>顺带一提，对于数组，数组名代表这个数组的头的位置，数组名[i]代表取数组中第i+1个元素的值。数组中的第一个元素是数组名[0]</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">memset</span>(Str, <span class="number">0</span>, <span class="keyword">sizeof</span>(Str));</span><br><span class="line">v5 = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>memset是memory set的缩写，和他的名字一样，他能够从内存中的某个位置开始，将之后的n个字节设置为指定值。在这里，他将Str数组的全部元素都设置为0。然后，程序将v5设置为0。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;input your flag:&quot;</span>);</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%40s&quot;</span>, Str);</span><br></pre></td></tr></table></figure>
+
+<p>printf打印了之后的信息，scanf前面的format代表其读入一个长度最长为40的字符串。之后的参数Str(正如之前所说，数组名代表了数组头的地址)代表了要读入到哪。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">v10 = <span class="number">1</span>;</span><br><span class="line">v9 = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>为v10和v9赋值捏。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ( <span class="built_in">strlen</span>(Str) == <span class="number">28</span> )</span><br><span class="line">&#123;</span><br></pre></td></tr></table></figure>
+
+<p>if和它的字面意思相同，代表着”如果“，这里的strlen函数会读入一个字符串所在的地址，返回其长度。把这两个元素结合起来，这段代码的意思便是”如果Str字符串的长度为28则“。之后的’{‘代表着代码块的开始，直到和他对应的’}’出现前的内容都是条件成立后要执行的内容。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">27</span>; ++i )</span><br><span class="line">&#123;</span><br><span class="line">  Str[i] ^= v10 + v9;</span><br><span class="line">  v9 += v10;</span><br><span class="line">  v10 = v9 - v10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>for循环要求三个以;隔开的参数，第一个为初始化，在这里是将变量i的值初始化为0；第二个为循环条件，在这里为当i&lt;&#x3D;27时继续循环；第三个为每一轮循环结束后要执行的代码，在这里的++表示自增，在这里等价于i&#x3D;i+1。</p>
+<p>所以在这个循环中，i的值由0一路递增至27，并在i&#x3D;27的循环结束后自增到28终止循环</p>
+<p>之后的’{‘代表着一个代码块的起始，这个代码块是每一轮循环都要执行的。（代码块嵌套捏）</p>
+<p>首先，^&#x3D;是一种简写，Str[i] ^&#x3D; v10 + v9也可以写成 Str[i] &#x3D; Str[i] ^ (v10 + v9)。^在c中代表着异或操作，这里便是将Str数组中的第i个元素与v10+v9的和进行异或并赋值回去。</p>
+<p>之后的v9+&#x3D;v10;v10&#x3D;v9-v10便是对这两个变量所作的操作：先将v9加上v10的值并赋值给v9，再将v9-v10的值赋值给v10。两个变量在每次循环开始时的值如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>i</th>
+<th>v9</th>
+<th>v10</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>8</td>
+<td>5</td>
+</tr>
+</tbody></table>
+<p>看呐，斐波那契数列[狗头]</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">for</span> ( j = <span class="number">0</span>; j &lt;= <span class="number">27</span>; ++j )</span><br><span class="line">   &#123;</span><br><span class="line">     <span class="keyword">if</span> ( Str[j] != v6[j] )</span><br><span class="line">     &#123;</span><br><span class="line">       <span class="built_in">puts</span>(<span class="string">&quot;Your flag is wrong&quot;</span>);</span><br><span class="line">       system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">&quot;You&#x27;ve found the correct flag!&quot;</span>);</span><br><span class="line">   system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后的for循环中初始化了一个变量j，j的值也是从0一路递增至27，并在28时退出循环。底下的if比较了Str数组和v6数组的每一个元素是否不相等(!&#x3D;符号代表不相等)，若不相等，就输出flag错误。system(“pause”);时一个用于暂停程序的函数，防止命令行一闪而过直接退出看不清输出。之后的return 0则是一个函数返回其返回值。在这里，就算代表着main函数终止并返回0。从这段逻辑可以看出，Str作操作后应该和v6一模一样，不然程序就会提示你输错了。</p>
+<p>之后若循环顺利完成并因为j的值而终止，程序便会输出你的flag正确，然后暂停退出一条龙。</p>
+<p>最后的一个’}’终止最开始那个if下的代码块，</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;The length of your flag is wrong&quot;</span>);</span><br><span class="line">  system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还记得之前那个对长度进行判断的if不，这是他的else。对于一个if-else语句当条件不成立时，程序便会跳到else部分执行。很合理（确信）。如果没有else那就直接忽略if下条件成立的代码继续往后执行。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main函数的定义结束标记。和之前main后的那个’{‘相匹配。</p>
+<h3 id="0b1所以要怎么写呢？"><a href="#0b1所以要怎么写呢？" class="headerlink" title="0b1所以要怎么写呢？"></a>0b1所以要怎么写呢？</h3><p>上面的程序逻辑总结起来就是一句话：读入一个字符串，若长度正确，在对字符串进行xor后判断其结果和v6是否相等。由于xor的对称性质，我们可以将v6进行同等的xor得到应该输入的字符串。因此可以考虑直接将代码复制出来，只把输入由Str改为v6。</p>
+<p>脚本如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span> <span class="comment">//printf函数定义</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span> <span class="comment">//memcpy函数定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">char</span> v6[<span class="number">36</span>]= &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="type">char</span> v9=<span class="number">1</span>,v10=<span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="built_in">memcpy</span>(v6, <span class="string">&quot;qkdzfvVQ\&quot;&quot;</span>, <span class="number">9</span>);</span><br><span class="line">	v6[<span class="number">9</span>] = <span class="number">-24</span>;</span><br><span class="line">	v6[<span class="number">10</span>] = <span class="number">-39</span>;</span><br><span class="line">	v6[<span class="number">11</span>] = <span class="number">11</span>;</span><br><span class="line">	v6[<span class="number">12</span>] = <span class="number">61</span>;</span><br><span class="line">	v6[<span class="number">13</span>] = <span class="number">-22</span>;</span><br><span class="line">	v6[<span class="number">14</span>] = <span class="number">78</span>;</span><br><span class="line">	v6[<span class="number">15</span>] = <span class="number">71</span>;</span><br><span class="line">	v6[<span class="number">16</span>] = <span class="number">100</span>;</span><br><span class="line">	v6[<span class="number">17</span>] = <span class="number">3</span>;</span><br><span class="line">	v6[<span class="number">18</span>] = <span class="number">-74</span>;</span><br><span class="line">	v6[<span class="number">19</span>] = <span class="number">28</span>;</span><br><span class="line">	v6[<span class="number">20</span>] = <span class="number">-125</span>;</span><br><span class="line">	v6[<span class="number">21</span>] = <span class="number">69</span>;</span><br><span class="line">	v6[<span class="number">22</span>] = <span class="number">98</span>;</span><br><span class="line">	v6[<span class="number">23</span>] = <span class="number">69</span>;</span><br><span class="line">	v6[<span class="number">24</span>] = <span class="number">115</span>;</span><br><span class="line">	v6[<span class="number">25</span>] = <span class="number">29</span>;</span><br><span class="line">	v6[<span class="number">26</span>] = <span class="number">-46</span>;</span><br><span class="line">	v6[<span class="number">27</span>] = <span class="number">85</span>;</span><br><span class="line">	<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">27</span>; ++i ) &#123;</span><br><span class="line">		v6[i] ^= v10 + v9;</span><br><span class="line">		v9 += v10;</span><br><span class="line">		v10 = v9 - v10;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,v6);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>得到flag: sharkctf{x0r_1s_1nt3rest1ng}</p>
 ]]></content>
       <categories>
         <category>Reverse</category>
