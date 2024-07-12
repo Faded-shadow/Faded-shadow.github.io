@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="暑假联合训练-week1-Reverse-wp2024.7.12 by Shen_Fan 首先是由于某人和我说一道题让他们逆一天，然后把题出难了。 其次是我不知道这玩意还分week1和week2，这下下周没活了 接下来按分数升序依次给出各个题目的wp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="暑假联合训练-week1-Reverse-wp">
+<meta property="og:url" content="http://example.com/post/81547f23.html">
+<meta property="og:site_name" content="Shen_Fan&#39;s blog">
+<meta property="og:description" content="暑假联合训练-week1-Reverse-wp2024.7.12 by Shen_Fan 首先是由于某人和我说一道题让他们逆一天，然后把题出难了。 其次是我不知道这玩意还分week1和week2，这下下周没活了 接下来按分数升序依次给出各个题目的wp">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_rc4_1.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_base64_1.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_base64_2.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_upx_1.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_upx_2.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_snake_1.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_snake_2.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_snake_3.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_snake_4.png">
+<meta property="og:image" content="http://example.com/images/summertrain_w1_snake_5.png">
+<meta property="article:published_time" content="2024-07-12T04:56:57.562Z">
+<meta property="article:modified_time" content="2024-07-12T07:15:20.156Z">
+<meta property="article:author" content="Shen_Fan">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Reverse">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/summertrain_w1_rc4_1.png">
+
+
+<link rel="canonical" href="http://example.com/post/81547f23.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/post/81547f23.html","path":"post/81547f23.html","title":"暑假联合训练-week1-Reverse-wp"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>暑假联合训练-week1-Reverse-wp | Shen_Fan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shen_Fan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a></li><li class="menu-item menu-item-link"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9A%91%E5%81%87%E8%81%94%E5%90%88%E8%AE%AD%E7%BB%83-week1-Reverse-wp"><span class="nav-number">1.</span> <span class="nav-text">暑假联合训练-week1-Reverse-wp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#find-bomb"><span class="nav-number">1.1.</span> <span class="nav-text">find_bomb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rc4-sp"><span class="nav-number">1.2.</span> <span class="nav-text">rc4_sp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#base64-sp"><span class="nav-number">1.3.</span> <span class="nav-text">base64-sp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ezupx"><span class="nav-number">1.4.</span> <span class="nav-text">ezupx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ezmaze"><span class="nav-number">1.5.</span> <span class="nav-text">ezmaze</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ezsnake"><span class="nav-number">1.6.</span> <span class="nav-text">ezsnake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ezvm"><span class="nav-number">1.7.</span> <span class="nav-text">ezvm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ezret"><span class="nav-number">1.8.</span> <span class="nav-text">ezret</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Shen_Fan"
+      src="/images/pic.jpg">
+  <p class="site-author-name" itemprop="name">Shen_Fan</p>
+  <div class="site-description" itemprop="description">Hello World!</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/post/81547f23.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pic.jpg">
+      <meta itemprop="name" content="Shen_Fan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shen_Fan's blog">
+      <meta itemprop="description" content="Hello World!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="暑假联合训练-week1-Reverse-wp | Shen_Fan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          暑假联合训练-week1-Reverse-wp
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-07-12 12:56:57 / 修改时间：15:15:20" itemprop="dateCreated datePublished" datetime="2024-07-12T12:56:57+08:00">2024-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Reverse/" itemprop="url" rel="index"><span itemprop="name">Reverse</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="暑假联合训练-week1-Reverse-wp"><a href="#暑假联合训练-week1-Reverse-wp" class="headerlink" title="暑假联合训练-week1-Reverse-wp"></a>暑假联合训练-week1-Reverse-wp</h1><p>2024.7.12 by Shen_Fan</p>
+<p>首先是由于某人和我说一道题让他们逆一天，然后把题出难了。</p>
+<p>其次是我不知道这玩意还分week1和week2，这下下周没活了</p>
+<p>接下来按分数升序依次给出各个题目的wp</p>
+<span id="more"></span>
+
+<h2 id="find-bomb"><a href="#find-bomb" class="headerlink" title="find_bomb"></a>find_bomb</h2><p>本周的签到题，目前已经看到的做法包括但不限于硬扫、动态调试找雷位置然后扫、找到输出flag部分然后复制代码逻辑自己跑、直接动态调试跳到输出部分让他输出flag。这里就不再赘述怎么写。</p>
+<p>不幸的是由于打印flag后没有暂停，程序会直接退出，直接卡住了一堆硬扫的人。其实只要自己开个终端在终端里运行就行了</p>
+<h2 id="rc4-sp"><a href="#rc4-sp" class="headerlink" title="rc4_sp"></a>rc4_sp</h2><p>略微修改后的rc4，通过与标准rc4对比后发现仅仅是rc4初始化部分将密钥放入k盒时做了一点小操作</p>
+<p><img src="/./../images/summertrain_w1_rc4_1.png" alt="image-20240712132152049"></p>
+<p>不难发现就是和k3y数组索引循环+1的部分作了异或，在标准程序中添加修改后直接进行解密即可拿到flag</p>
+<h2 id="base64-sp"><a href="#base64-sp" class="headerlink" title="base64-sp"></a>base64-sp</h2><p>打开发现是标准base64，直接对密文解码后得到</p>
+<p><img src="/./../images/summertrain_w1_base64_1.png" alt="image-20240712132433502"></p>
+<p>提示有些函数在main之前运行，对密文按x查找引用找到该函数</p>
+<p><img src="/./../images/summertrain_w1_base64_2.png" alt="image-20240712132554919"></p>
+<p>可以发现不但给密文作了异或还把表给换了。可以通过动态调试或复制后本地运行的方法获取之后的密文和表，进行base64解码后得到flag。</p>
+<h2 id="ezupx"><a href="#ezupx" class="headerlink" title="ezupx"></a>ezupx</h2><p>upx壳，但是被小小地modified了，可以通过x64dbg手动脱壳后分析。手动脱壳在网上有很多教程，之前的博客“2023SharkCTF-week3-Reverse-wp”中的shell一题也是相同的壳，已经详细介绍了如何手动脱壳，在此不再赘述</p>
+<p>直接进入到脱壳后的加密逻辑部分</p>
+<p>通过字符串表查找引用找到主函数。主函数经过逻辑分析后发现flag长度为41且形如flag{XXXXXXXX-XXXXXXXX-XXXXXXX-XXXXXXXX}，每个X代表一个16进制数（0-9，A-F）。之后的操作就是把这四个X连在一起变成一个int128送进函数</p>
+<p><img src="/./../images/summertrain_w1_upx_1.png" alt="image-20240712135541252"></p>
+<p>进入加密函数</p>
+<p><img src="/./../images/summertrain_w1_upx_2.png" alt="image-20240712140609099"></p>
+<p>不难写出等价的c代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">encry</span><span class="params">(<span class="type">__uint128_t</span> input)</span> &#123;</span><br><span class="line">    <span class="type">int</span> round = <span class="number">128</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="type">__uint128_t</span> v4 = <span class="number">0x1145140000000000</span>;</span><br><span class="line">        <span class="keyword">if</span> (input &amp; <span class="number">1</span>)</span><br><span class="line">            v4 = <span class="number">0xF191981F00000000</span>;</span><br><span class="line">        v4 &lt;&lt;= <span class="number">64</span>;</span><br><span class="line">        input = (input &gt;&gt; <span class="number">1</span>) ^ v4;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>容易发现，当inpuit为偶数时，input会在右移丢失一位后异或上(0x1145140000000000 &lt;&lt; 64)，使得最高位为0。input为奇数时，input会在右移丢失一位后异或上(0xF191981F00000000 &lt;&lt; 64)，使得最高位为1，因此有了最高位的值可以知道右移丢失的那一位的值，并还原出异或前的数据，基于此原理写出脚本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   <span class="type">__uint128_t</span> a = <span class="number">0xF191981F</span>, b = <span class="number">0x11451400</span>;</span><br><span class="line">   a &lt;&lt;= <span class="number">96</span>, b &lt;&lt;= <span class="number">96</span>;</span><br><span class="line"><span class="type">__uint128_t</span> mask = <span class="number">1</span>;</span><br><span class="line">   mask &lt;&lt;= <span class="number">127</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">128</span>; ++i) &#123;</span><br><span class="line">       <span class="type">__int128_t</span> tmp;</span><br><span class="line">       <span class="keyword">if</span> (flag &amp; mask) &#123;</span><br><span class="line">           flag ^= a;</span><br><span class="line">           tmp = <span class="number">1</span>;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           flag ^= b;</span><br><span class="line">           tmp = <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       flag &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">       flag |= tmp;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>将密文反向解密后即可得到flag</p>
+<h2 id="ezmaze"><a href="#ezmaze" class="headerlink" title="ezmaze"></a>ezmaze</h2><p>三维的迷宫，考DFS算法</p>
+<p>没啥可说的，把我写的DFS放上来就差不多了吧</p>
+<p>yysy这题出题的原理也是通过DFS生成迷宫再DFS求解的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> maze[<span class="number">10</span>][<span class="number">10</span>][<span class="number">10</span>]； <span class="comment">// 这里要改成题目中的迷宫字符串。</span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> path[<span class="number">1000</span>];</span><br><span class="line"><span class="type">void</span> <span class="title function_">findpath</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y, <span class="type">int</span> z, <span class="type">int</span> len)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (x == <span class="number">9</span> &amp;&amp; y == <span class="number">9</span> &amp;&amp; z == <span class="number">9</span>) &#123;</span><br><span class="line">        path[len] = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, path);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    maze[x][y][z] = <span class="string">&#x27;X&#x27;</span>;</span><br><span class="line">    <span class="type">int</span> dirs[<span class="number">6</span>][<span class="number">3</span>] = &#123;</span><br><span class="line">        &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>&#125;, &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>&#125;,</span><br><span class="line">        &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>&#125;,</span><br><span class="line">        &#123;<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;, &#123;<span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</span><br><span class="line">        <span class="type">int</span> nx = x + dirs[i][<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> ny = y + dirs[i][<span class="number">1</span>];</span><br><span class="line">        <span class="type">int</span> nz = z + dirs[i][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">if</span> (nx &lt; <span class="number">0</span> || nx &gt;= <span class="number">10</span> || ny &lt; <span class="number">0</span> || ny &gt;= <span class="number">10</span> || nz &lt; <span class="number">0</span> || nz &gt;= <span class="number">10</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (maze[nx][ny][nz] == <span class="string">&#x27;.&#x27;</span>) &#123;</span><br><span class="line">            path[len] = <span class="string">&quot;FBLRUD&quot;</span>[i];</span><br><span class="line">            findpath(nx, ny, nz, len + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    maze[x][y][z] = <span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后输入路径就可以得到flag</p>
+<h2 id="ezsnake"><a href="#ezsnake" class="headerlink" title="ezsnake"></a>ezsnake</h2><p>炒冷饭，以前的题目加了个花指令就放上来了</p>
+<p>原题在博客“2023SharkCTF-week2-Reverse-wp”的Hungry_Snake</p>
+<p>这里仅对花指令作出一些解释</p>
+<p><img src="/./../images/summertrain_w1_snake_1.png" alt="image-20240712144825014"></p>
+<p>首先是开门的一个jmp到指令中间，即EB FF机器码使得下一条指令从FF开始解析。所以只需要把EB给nop了就行</p>
+<p><img src="/./../images/summertrain_w1_snake_2.png" alt="image-20240712145007333"></p>
+<p>这样就正常了</p>
+<p><img src="/./../images/summertrain_w1_snake_3.png" alt="image-20240712145105363"></p>
+<p>然后是下面一个基于call的花指令，该花指令·执行流程如下：</p>
+<ol>
+<li>push rbp 将rbp的值压栈</li>
+<li>call $+5 将rip（call的下一条指令的地址）压栈，$+5恰好跳转到下一条指令到pop rbp</li>
+<li>pop rbp 将rip的值pop至rbp</li>
+<li>add rbp, 8，将rbp的值+8，此时rbp中的地址为地址结尾为175D的那个地方，为pop rbp</li>
+<li>push rbp 将rbp的值压栈</li>
+<li>retn 返回到栈顶的地址，也就是刚刚压栈的rbp的值，即之前压栈的那个rip再+8</li>
+<li>地址结尾为175D的那个地方反编译得到pop rbp，恢复rbp的值，至此花指令结束根据</li>
+</ol>
+<p>根据以上的分析，从最开始的push rbp到最后的pop rbp中间都是没用的花指令，全给他nop了</p>
+<p><img src="/./../images/summertrain_w1_snake_4.png" alt="image-20240712150205470"></p>
+<p>然后就可以愉快地f5了</p>
+<p><img src="/./../images/summertrain_w1_snake_5.png" alt="image-20240712150242666"></p>
+<p>之后的就去看原题罢</p>
+<h2 id="ezvm"><a href="#ezvm" class="headerlink" title="ezvm"></a>ezvm</h2><p>学弟说想要VM，于是就有了VM</p>
+<p>（然而直到我写下这句话的现在学弟还在日VM）</p>
+<p>先不放wp，下周接着写[狗头]</p>
+<h2 id="ezret"><a href="#ezret" class="headerlink" title="ezret"></a>ezret</h2><p>感谢佬cia1lo写的<a target="_blank" rel="noopener" href="https://www.cnblogs.com/cia1lo/p/18294003">wp</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/Reverse/" rel="tag"># Reverse</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/post/903a36fa.html" rel="prev" title="MiniL-Reverse部分题解">
+                  <i class="fa fa-angle-left"></i> MiniL-Reverse部分题解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Shen_Fan</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Faded-shadow","repo":"Faded-shadow.github.io","client_id":"42eddc31ed5db4eab387","client_secret":"f22eda8a45eb2ef4b4f0b536e58bda5234b0b280","admin_user":"Faded-shadow","distraction_free_mode":true,"language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"00b3f2e4b28e431f043064a311ec8f39"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+
+<!--动态线条背景-->
+<script type="text/javascript"
+color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+</html>
